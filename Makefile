@@ -1,4 +1,4 @@
-COMMON_PACKAGE=github.com/zuu-development/fullstack-examination-2024/internal/common
+COMMON_PACKAGE=github.com/zuu-development/fullstack-examination-2024/internal/infrastructure/version
 CURRENT_DIR=$(shell pwd)
 DIST_DIR=${CURRENT_DIR}/dist
 CLI_NAME=todo-cli
@@ -78,7 +78,7 @@ test-backend-ci:
 	gotestsum --format=testname -- -cover -coverprofile=coverage.out ./...
 
 # ビルド時にチェックする .go ファイル
-SWAG_GO_FILES:=$(shell find internal/handler -type f -name '*.go' -print)
+SWAG_GO_FILES:=$(shell find internal/api/handler -type f -name '*.go' -print)
 
 docs/swagger.yaml: main.go $(SWAG_GO_FILES)
 	swag init
