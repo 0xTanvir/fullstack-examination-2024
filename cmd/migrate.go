@@ -8,7 +8,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/zuu-development/fullstack-examination-2024/internal/db"
+	"github.com/zuu-development/fullstack-examination-2024/internal/infrastructure/datastores/sqlite"
 )
 
 // migrateCmd represents the migrate command
@@ -22,12 +22,12 @@ var migrateCmd = &cobra.Command{
 			return
 		}
 
-		dbInstance, err := db.New(cfg.SQLite.DBFilename)
+		dbInstance, err := sqlite.New(cfg.SQLite.DBFilename)
 		if err != nil {
 			log.Fatalf("failed to open database filename: %s err: %s", cfg.SQLite.DBFilename, err)
 			return
 		}
-		if err := db.Migrate(dbInstance); err != nil {
+		if err := sqlite.Migrate(dbInstance); err != nil {
 			log.Fatalf("failed to migrate database err: %s", err)
 		}
 		fmt.Println("Migration completed. SQLite.DBFilename: ", cfg.SQLite.DBFilename)

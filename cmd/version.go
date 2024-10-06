@@ -5,7 +5,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/zuu-development/fullstack-examination-2024/internal/common"
+	"github.com/zuu-development/fullstack-examination-2024/internal/infrastructure/version"
 )
 
 func init() {
@@ -23,7 +23,7 @@ func NewVersionCmd() *cobra.Command {
   todo-cli version
 `,
 		Run: func(cmd *cobra.Command, _ []string) {
-			cv := common.GetVersion()
+			cv := version.Get()
 			switch output {
 			case "wide", "short", "":
 				fmt.Fprint(cmd.OutOrStdout(), printClientVersion(&cv, (output == "short")))
@@ -36,7 +36,7 @@ func NewVersionCmd() *cobra.Command {
 	return &versionCmd
 }
 
-func printClientVersion(version *common.Version, short bool) string {
+func printClientVersion(version *version.Version, short bool) string {
 	output := fmt.Sprintf("%s: %s\n", "todo-cli", version)
 	if short {
 		return output

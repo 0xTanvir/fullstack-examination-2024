@@ -8,12 +8,12 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/zuu-development/fullstack-examination-2024/internal/model"
+	"github.com/zuu-development/fullstack-examination-2024/internal/infrastructure/config"
 )
 
 var (
 	cfgFile string
-	cfg     model.Config
+	cfg     config.App
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -61,9 +61,9 @@ func initConfig() {
 		fmt.Fprintln(os.Stderr, "Using config file:", viper.ConfigFileUsed())
 	}
 
-	cfg = model.Config{
-		APIServer:     model.Server{Enable: true, Port: 8080},
-		SwaggerServer: model.Server{Enable: false, Port: 1314},
+	cfg = config.App{
+		APIServer:     config.Server{Enable: true, Port: 8080},
+		SwaggerServer: config.Server{Enable: false, Port: 1314},
 	}
 
 	err := viper.Unmarshal(&cfg)

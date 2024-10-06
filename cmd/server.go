@@ -9,7 +9,7 @@ import (
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/zuu-development/fullstack-examination-2024/internal/server"
+	"github.com/zuu-development/fullstack-examination-2024/internal/api/server"
 )
 
 func init() {
