@@ -1,5 +1,5 @@
-// Package common provides common functionality for the application.
-package common
+// Package version provides version functionality for the application.
+package version
 
 import (
 	"fmt"
@@ -29,8 +29,8 @@ func (v Version) String() string {
 	return v.Version
 }
 
-// GetVersion returns the version information
-func GetVersion() Version {
+// Get returns the version information
+func Get() Version {
 	var versionStr string
 
 	// otherwise formulate a version string based on as much metadata
