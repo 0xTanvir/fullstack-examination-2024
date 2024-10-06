@@ -10,6 +10,9 @@ const docTemplate = `{
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
         "contact": {},
+        "license": {
+            "name": "Apache 2.0"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -28,19 +31,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/handler.ResponseData"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/dto.ResponseData"
                         }
                     }
                 }
@@ -48,25 +39,48 @@ const docTemplate = `{
         },
         "/todos": {
             "get": {
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "todos"
                 ],
                 "summary": "Find all todos",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "task search by task",
+                        "name": "task",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "status search by status",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "order by asc or desc",
+                        "name": "order",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.ResponseData"
+                                    "$ref": "#/definitions/dto.ResponseData"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
-                                        "Data": {
+                                        "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/model.Todo"
+                                                "$ref": "#/definitions/dto.Todo"
                                             }
                                         }
                                     }
@@ -77,7 +91,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handler.ResponseError"
+                            "$ref": "#/definitions/dto.ResponseError"
                         }
                     }
                 }
@@ -95,28 +109,28 @@ const docTemplate = `{
                 "summary": "Create a new todo",
                 "parameters": [
                     {
-                        "description": "json",
+                        "description": "Create Todo Request Body",
                         "name": "request",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.CreateRequest"
+                            "$ref": "#/definitions/dto.CreateTodoRequest"
                         }
                     }
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created",
+                        "description": "Success Response with Todo",
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.ResponseError"
+                                    "$ref": "#/definitions/dto.ResponseData"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/model.Todo"
+                                            "$ref": "#/definitions/dto.Todo"
                                         }
                                     }
                                 }
@@ -126,20 +140,23 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handler.ResponseError"
+                            "$ref": "#/definitions/dto.ResponseError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handler.ResponseError"
+                            "$ref": "#/definitions/dto.ResponseError"
                         }
                     }
                 }
             }
         },
-        "/todos/:id": {
+        "/todos/{id}": {
             "get": {
+                "produces": [
+                    "application/json"
+                ],
                 "tags": [
                     "todos"
                 ],
@@ -147,6 +164,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "todo id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -154,17 +172,17 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Success Response with Todo",
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.ResponseData"
+                                    "$ref": "#/definitions/dto.ResponseData"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
-                                        "Data": {
-                                            "$ref": "#/definitions/model.Todo"
+                                        "data": {
+                                            "$ref": "#/definitions/dto.Todo"
                                         }
                                     }
                                 }
@@ -174,19 +192,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handler.ResponseError"
+                            "$ref": "#/definitions/dto.ResponseError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/handler.ResponseError"
+                            "$ref": "#/definitions/dto.ResponseError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handler.ResponseError"
+                            "$ref": "#/definitions/dto.ResponseError"
                         }
                     }
                 }
@@ -209,11 +227,12 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.UpdateRequestBody"
+                            "$ref": "#/definitions/dto.UpdateTodoRequestBody"
                         }
                     },
                     {
                         "type": "integer",
+                        "description": "todo id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -221,17 +240,17 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created",
+                        "description": "Success Response with Todo",
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/handler.ResponseData"
+                                    "$ref": "#/definitions/dto.ResponseData"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
-                                        "Data": {
-                                            "$ref": "#/definitions/model.Todo"
+                                        "data": {
+                                            "$ref": "#/definitions/dto.Todo"
                                         }
                                     }
                                 }
@@ -241,13 +260,13 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handler.ResponseError"
+                            "$ref": "#/definitions/dto.ResponseError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handler.ResponseError"
+                            "$ref": "#/definitions/dto.ResponseError"
                         }
                     }
                 }
@@ -260,6 +279,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "todo id",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -272,19 +292,19 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/handler.ResponseError"
+                            "$ref": "#/definitions/dto.ResponseError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/handler.ResponseError"
+                            "$ref": "#/definitions/dto.ResponseError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/handler.ResponseError"
+                            "$ref": "#/definitions/dto.ResponseError"
                         }
                     }
                 }
@@ -292,18 +312,22 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "handler.CreateRequest": {
+        "dto.CreateTodoRequest": {
             "type": "object",
             "required": [
+                "priority",
                 "task"
             ],
             "properties": {
+                "priority": {
+                    "$ref": "#/definitions/dto.Priority"
+                },
                 "task": {
                     "type": "string"
                 }
             }
         },
-        "handler.Error": {
+        "dto.Error": {
             "type": "object",
             "properties": {
                 "code": {
@@ -314,7 +338,20 @@ const docTemplate = `{
                 }
             }
         },
-        "handler.ResponseData": {
+        "dto.Priority": {
+            "type": "string",
+            "enum": [
+                "low",
+                "medium",
+                "high"
+            ],
+            "x-enum-varnames": [
+                "PriorityLow",
+                "PriorityMedium",
+                "PriorityHigh"
+            ]
+        },
+        "dto.ResponseData": {
             "type": "object",
             "properties": {
                 "data": {
@@ -322,30 +359,19 @@ const docTemplate = `{
                 }
             }
         },
-        "handler.ResponseError": {
+        "dto.ResponseError": {
             "type": "object",
             "properties": {
                 "errors": {
                     "description": "Errors is the response errors.",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/handler.Error"
+                        "$ref": "#/definitions/dto.Error"
                     }
                 }
             }
         },
-        "handler.UpdateRequestBody": {
-            "type": "object",
-            "properties": {
-                "status": {
-                    "$ref": "#/definitions/model.Status"
-                },
-                "task": {
-                    "type": "string"
-                }
-            }
-        },
-        "model.Status": {
+        "dto.Status": {
             "type": "string",
             "enum": [
                 "created",
@@ -358,22 +384,33 @@ const docTemplate = `{
                 "Done"
             ]
         },
-        "model.Todo": {
+        "dto.Todo": {
             "type": "object",
             "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
+                "priority": {
+                    "type": "string"
+                },
                 "status": {
-                    "$ref": "#/definitions/model.Status"
+                    "type": "string"
                 },
                 "task": {
                     "type": "string"
+                }
+            }
+        },
+        "dto.UpdateTodoRequestBody": {
+            "type": "object",
+            "properties": {
+                "priority": {
+                    "$ref": "#/definitions/dto.Priority"
                 },
-                "updatedAt": {
+                "status": {
+                    "$ref": "#/definitions/dto.Status"
+                },
+                "task": {
                     "type": "string"
                 }
             }
