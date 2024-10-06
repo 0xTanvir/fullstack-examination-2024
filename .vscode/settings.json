@@ -12,12 +12,38 @@
     "overrideConfigFile": "${workspaceFolder}/ui/eslint.config.mjs"
   },
   "cSpell.words": [
+    "bodyclose",
+    "dupl",
+    "errcheck",
+    "goarch",
+    "gocritic",
+    "gocyclo",
+    "godoc",
+    "gofmt",
+    "gofumpt",
+    "golangci",
     "gorm",
+    "gosec",
+    "gosimple",
+    "govet",
     "Healthz",
+    "ineffassign",
+    "Infof",
     "labstack",
+    "ldflags",
     "logrus",
+    "Nuxt",
+    "prealloc",
     "sirupsen",
+    "staticcheck",
     "stretchr",
-    "todos"
-  ]
+    "struct",
+    "swaggo",
+    "testifylint",
+    "todos",
+    "typecheck",
+    "unconvert",
+    "usestdlibvars"
+  ],
+  "makefile.configureOnOpen": false
 }
